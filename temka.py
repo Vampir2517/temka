@@ -77,7 +77,7 @@ async def join_channel(update: Update, context: CallbackContext) -> int:
 
 # Главная функция, которая запускает бота
 def main():
-    application = Application.builder().token("ВАШ_ТОКЕН").build()
+    application = Application.builder().token("7896306313:AAErvipbUxclxdf4zt-nnd8zog6g94LDyTY").build()
     
     # Конфигурируем разговор
     conversation_handler = ConversationHandler(

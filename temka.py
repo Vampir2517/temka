@@ -11,25 +11,21 @@ async def start(update: Update, context: CallbackContext) -> int:
         [InlineKeyboardButton("Далее", callback_data='next')]  # Кнопка "Далее"
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-
     # Приветственное сообщение с кнопкой
     await update.message.reply_text(
-        emoji.emojize(':bell:') + f'{update.message.from_user.first_name} , добро пожаловать в CHILL BOT\n\n' +
+        emoji.emojize(':bell:') + f'{update.message.from_user.first_name}, добро пожаловать в CHILL BOT\n\n' +
         emoji.emojize(':open_file_folder:') + 'Для дальнейшей работы с нами, вам потребуется заполнить анкету.',
         reply_markup=reply_markup  # Добавляем клавиатуру
     )
     return FIRST_QUESTION
 
-
 # Обработка нажатия кнопки "Далее"
 async def button(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     await query.answer()  # Подтверждаем нажатие кнопки
-
     # Переход ко второму шагу (вопросу)
     await query.edit_message_text(emoji.emojize(':black_nib:') + 'Откуда вы узнали о нашем проекте?')
     return SECOND_QUESTION
-
 
 # Первый вопрос
 async def first_question(update: Update, context: CallbackContext) -> int:
@@ -39,12 +35,10 @@ async def first_question(update: Update, context: CallbackContext) -> int:
     await update.message.reply_text(emoji.emojize(':money_bag:') + 'Есть ли у вас опыт работы?')
     return SECOND_QUESTION
 
-
 # Второй вопрос
 async def second_question(update: Update, context: CallbackContext) -> int:
     user_experience = update.message.text  # Сохраняем ответ на вопрос о опыте
     context.user_data['experience'] = user_experience  # Сохраняем ответ в данных пользователя
-
     # Сообщение с предложением вступить в канал
     await update.message.reply_text(
         emoji.emojize(':bell:') + 'Теперь вы можете вступить в наш канал!',
@@ -53,29 +47,23 @@ async def second_question(update: Update, context: CallbackContext) -> int:
             [InlineKeyboardButton("Я вступил, сообщите администрации", callback_data="join_channel")]  # Кнопка для уведомления
         ])
     )
-
     return CHANNEL_INVITE
-
 
 # Обработчик нажатия кнопки "Я вступил, сообщите администрации"
 async def join_channel(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     await query.answer()  # Подтверждаем нажатие кнопки
-
     # Отправляем следующее сообщение
     await query.edit_message_text(
         emoji.emojize(':rocket:') + 'Ваша заявка отправлена администрации проекта.\n\n' +
         emoji.emojize(':watch:') + 'Примерное время рассмотрения 1-10 часов'
     )  # Новый текст после вступления в канал
-
     # Завершаем разговор
     return ConversationHandler.END
 
-
 # Главная функция, которая запускает бота
 def main():
-    application = Application.builder().token("7896306313:AAErvipbUxclxdf4zt-nnd8zog6g94LDyTY").build()
-
+    application = Application.builder().token("7896306313:AAErvipbUxclxdf4zt-nnd8zog6g94LDyTY").build()  # Замените на ваш токен
     # Конфигурируем разговор
     conversation_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],  # Начинаем с команды /start
@@ -86,16 +74,16 @@ def main():
         },
         fallbacks=[],
     )
-
     # Обработчик нажатия кнопки "Далее"
     application.add_handler(CallbackQueryHandler(button, pattern='next'))
-
     # Добавляем ConversationHandler
     application.add_handler(conversation_handler)
-
+    
     # Запуск бота
-    application.run_polling()
-
+    try:
+        application.run_polling()
+    except Exception as e:
+        print(f"Ошибка: {e}")
 
 if __name__ == '__main__':
     main()
